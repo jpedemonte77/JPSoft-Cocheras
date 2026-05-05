@@ -631,6 +631,13 @@ function renderPagos() {
     const toggle = row.querySelector(".pago-toggle");
     toggle.addEventListener("click", async () => {
       const nuevoPagado = !esPagado;
+
+      // Confirmar solo si se revierte de pagado a pendiente
+      if (esPagado && !nuevoPagado) {
+        const nombre = vehiculos[vid]?.nombre || "este inquilino";
+        if (!confirm(`¿Querés marcar como pendiente el pago de ${nombre}?`)) return;
+      }
+
       const metodo = row.querySelector(`#met-${vid}`).value || "efectivo";
       const admin  = row.querySelector(`#adm-${vid}`).value || "joaquin";
       const datos  = nuevoPagado
