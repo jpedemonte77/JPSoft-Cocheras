@@ -1244,12 +1244,17 @@ select.form-input option { background: var(--bg2); }
 @media (max-width: 768px) {
   .admins-resumen { grid-template-columns: 1fr; }
   .pago-row {
-    grid-template-columns: 28px 1fr;
-    grid-template-rows: auto auto;
+    grid-template-columns: 28px 1fr auto auto auto;
+    gap: 6px;
+    padding: .65rem .75rem;
   }
-  .pago-toggle, .pago-select, .pago-historial-btn {
-    grid-column: 2;
-  }
+  .pago-select { min-width: 0; font-size: 11px; padding: .3rem .4rem; }
+}
+
+@media (max-width: 480px) {
+  .pago-row { grid-template-columns: 24px 1fr auto auto auto; gap: 5px; padding: .6rem .65rem; }
+  .pago-select { display: none; }
+  .pago-num { font-size: 9px; }
 }
 
 /* ===========================
