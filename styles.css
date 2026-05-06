@@ -1250,6 +1250,15 @@ select.form-input option { background: var(--bg2); }
 
 @media (max-width: 768px) {
   .admins-resumen { grid-template-columns: 1fr; }
+  .pago-row {
+    grid-template-columns: 36px 1fr;
+    grid-template-rows: auto auto;
+    gap: 6px 10px;
+  }
+  .pago-info { grid-column: 2; }
+  .pago-toggle { grid-column: 1 / -1; }
+  .pago-select { grid-column: span 1; font-size: 12px; }
+  .pago-acciones { grid-column: 1 / -1; }
 }
 
 /* ===========================
