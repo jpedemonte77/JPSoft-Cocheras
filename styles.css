@@ -2168,6 +2168,10 @@ select.form-input option { background: var(--bg2); }
   border-radius: var(--radius-lg);
 }
 
+@media (max-width: 768px) {
+  .aumentos-tabla-wrap { overflow-x: auto; }
+}
+
 .aumentos-tabla {
   width: 100%;
   border-collapse: collapse;
