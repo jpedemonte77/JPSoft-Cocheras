@@ -639,7 +639,7 @@ function renderPagos() {
           <button class="pago-historial-btn" title="Historial de pagos" data-vid="${vid}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </button>
-          ${esPagado ? `<button class="pago-recibo-btn" title="Descargar recibo PDF" data-vid="${vid}">
+          ${esPagado ? `<button class="pago-recibo-btn" title="Descargar recibo PNG" data-vid="${vid}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           </button>` : ""}
         </div>
@@ -1914,160 +1914,97 @@ document.getElementById("fact-modal-overlay").addEventListener("click",  (e) => 
 // ============================================================
 //  RECIBO PDF
 // ============================================================
-function generarReciboPDF(vid, v, p, mes) {
-  const fechaPago   = p.fecha ? new Date(p.fecha).toLocaleDateString("es-AR", { day:"2-digit", month:"2-digit", year:"numeric" }) : "—";
-  const metodoTxt   = p.metodo === "transferencia" ? "Transferencia bancaria" : "Efectivo";
-  const adminTxt    = p.admin === "joaquin" ? "Joaquín" : "Federico";
-  const montoTxt    = formatMonto(p.monto || v.monto || 0);
-  const mesTxt      = mesLabel(mes);
-  const nroRecibo   = `${mes.replace("-","")}-${String(v.cochera).padStart(2,"0")}`;
-  const hoy         = new Date().toLocaleDateString("es-AR", { day:"2-digit", month:"2-digit", year:"numeric" });
+async function generarReciboPDF(vid, v, p, mes) {
+  const fechaPago = p.fecha ? new Date(p.fecha).toLocaleDateString("es-AR", { day:"2-digit", month:"2-digit", year:"numeric" }) : "—";
+  const metodoTxt = p.metodo === "transferencia" ? "Transferencia bancaria" : "Efectivo";
+  const adminTxt  = p.admin === "joaquin" ? "Joaquín" : "Federico";
+  const montoTxt  = formatMonto(p.monto || v.monto || 0);
+  const mesTxt    = mesLabel(mes);
+  const nroRecibo = `${mes.replace("-","")}-${String(v.cochera).padStart(2,"0")}`;
+  const hoy       = new Date().toLocaleDateString("es-AR", { day:"2-digit", month:"2-digit", year:"numeric" });
 
-  const html = `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <title>Recibo ${nroRecibo}</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      background: #fff;
-      color: #111;
-      padding: 48px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 36px;
-      padding-bottom: 20px;
-      border-bottom: 2px solid #111;
-    }
-    .brand { font-size: 20px; font-weight: 700; color: #111; letter-spacing: -0.5px; }
-    .brand-sub { font-size: 12px; color: #888; margin-top: 3px; }
-    .recibo-num { text-align: right; }
-    .recibo-num-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .06em; }
-    .recibo-num-val { font-size: 18px; font-weight: 700; color: #111; margin-top: 2px; font-family: 'Courier New', monospace; }
-    .recibo-fecha { font-size: 12px; color: #888; margin-top: 4px; }
-    .titulo {
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: #888;
-      margin-bottom: 20px;
-    }
-    .monto-box {
-      background: #f7f7f8;
-      border-radius: 10px;
-      padding: 20px 24px;
-      margin-bottom: 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .monto-label { font-size: 13px; color: #666; }
-    .monto-val { font-size: 28px; font-weight: 700; color: #111; font-family: 'Courier New', monospace; }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px 24px;
-      margin-bottom: 36px;
-    }
-    .field-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
-    .field-val { font-size: 14px; font-weight: 500; color: #111; }
-    .divider { border: none; border-top: 1px solid #e5e5e5; margin: 28px 0; }
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-    .firma-box { text-align: center; }
-    .firma-linea { width: 160px; border-top: 1px solid #111; margin-bottom: 6px; }
-    .firma-label { font-size: 11px; color: #888; }
-    .sello { font-size: 11px; color: #aaa; text-align: right; line-height: 1.6; }
-    @media print {
-      body { padding: 32px; }
-      @page { margin: 0; size: A4; }
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <div>
-      <div class="brand">JPSoft | Garage</div>
-      <div class="brand-sub">Gestión de cocheras</div>
-    </div>
-    <div class="recibo-num">
-      <div class="recibo-num-label">Recibo Nº</div>
-      <div class="recibo-num-val">${nroRecibo}</div>
-      <div class="recibo-fecha">Emitido: ${hoy}</div>
-    </div>
-  </div>
+  // Crear contenedor oculto con el recibo
+  const wrap = document.createElement("div");
+  wrap.style.cssText = `
+    position: fixed; left: -9999px; top: 0;
+    width: 1080px; height: 1920px;
+    background: #ffffff;
+    font-family: 'DM Sans', Arial, sans-serif;
+    display: flex; flex-direction: column;
+  `;
 
-  <div class="titulo">Recibo de pago — ${mesTxt}</div>
+  wrap.innerHTML = `
+    <div style="background:#111;padding:72px 80px 56px;text-align:center">
+      <div style="font-size:28px;font-weight:500;color:rgba(255,255,255,.6);letter-spacing:.06em;margin-bottom:10px">JPSoft | Garage</div>
+      <div style="font-size:52px;font-weight:500;color:#fff">Recibo de pago</div>
+    </div>
 
-  <div class="monto-box">
-    <div class="monto-label">Monto abonado</div>
-    <div class="monto-val">${montoTxt}</div>
-  </div>
+    <div style="flex:1;padding:64px 80px;display:flex;flex-direction:column;gap:0">
 
-  <div class="grid">
-    <div>
-      <div class="field-label">Inquilino</div>
-      <div class="field-val">${v.nombre || "—"}</div>
-    </div>
-    <div>
-      <div class="field-label">Cochera Nº</div>
-      <div class="field-val">${String(v.cochera).padStart(2,"0")}</div>
-    </div>
-    <div>
-      <div class="field-label">Período</div>
-      <div class="field-val">${mesTxt}</div>
-    </div>
-    <div>
-      <div class="field-label">Fecha de pago</div>
-      <div class="field-val">${fechaPago}</div>
-    </div>
-    <div>
-      <div class="field-label">Forma de pago</div>
-      <div class="field-val">${metodoTxt}</div>
-    </div>
-    <div>
-      <div class="field-label">Recibió</div>
-      <div class="field-val">${adminTxt}</div>
-    </div>
-    ${v.patente ? `<div>
-      <div class="field-label">Vehículo / Patente</div>
-      <div class="field-val">${v.modelo ? v.modelo + " — " : ""}${v.patente}</div>
-    </div>` : ""}
-  </div>
+      <div style="background:#f7f7f8;border-radius:20px;padding:48px 56px;margin-bottom:48px;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:30px;color:#888">Monto abonado</div>
+        <div style="font-size:72px;font-weight:500;color:#111;font-family:'Courier New',monospace">${montoTxt}</div>
+      </div>
 
-  <hr class="divider" />
+      ${[
+        ["Inquilino",     v.nombre || "—"],
+        ["Cochera Nº",    String(v.cochera).padStart(2,"0")],
+        ["Período",       mesTxt],
+        ["Fecha de pago", fechaPago],
+        ["Forma de pago", metodoTxt],
+        ["Recibió",       adminTxt],
+        ...(v.patente ? [["Vehículo / Patente", (v.modelo ? v.modelo + " — " : "") + v.patente]] : [])
+      ].map(([k, val]) => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:32px 0;border-bottom:1.5px solid #ebebeb">
+          <div style="font-size:30px;color:#888">${k}</div>
+          <div style="font-size:34px;font-weight:500;color:#111">${val}</div>
+        </div>
+      `).join("")}
 
-  <div class="footer">
-    <div class="firma-box">
-      <div class="firma-linea"></div>
-      <div class="firma-label">Firma</div>
     </div>
-    <div class="sello">
-      Documento generado por JPSoft | Garage<br>
-      ${hoy}
-    </div>
-  </div>
-</body>
-</html>`;
 
-  const ventana = window.open("", "_blank", "width=700,height=900");
-  ventana.document.write(html);
-  ventana.document.close();
-  ventana.addEventListener("load", () => {
-    ventana.focus();
-    ventana.print();
-  });
+    <div style="padding:40px 80px;border-top:1.5px solid #ebebeb;display:flex;justify-content:space-between;align-items:center;background:#fafafa">
+      <div style="font-size:26px;color:#bbb;font-family:'Courier New',monospace">Nº ${nroRecibo}</div>
+      <div style="font-size:26px;color:#bbb">Emitido el ${hoy}</div>
+    </div>
+  `;
+
+  document.body.appendChild(wrap);
+
+  try {
+    // Cargar html2canvas si no está
+    if (!window.html2canvas) {
+      await new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+        s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+    }
+
+    showToast("Generando imagen…", "");
+
+    const canvas = await html2canvas(wrap, {
+      width:  1080,
+      height: 1920,
+      scale:  1,
+      useCORS: true,
+      backgroundColor: "#ffffff"
+    });
+
+    // Descargar como PNG
+    const link = document.createElement("a");
+    link.download = `recibo-${nroRecibo}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+
+    showToast("Recibo descargado ✓", "success");
+  } catch (e) {
+    showToast("Error al generar la imagen", "error");
+    console.error(e);
+  } finally {
+    document.body.removeChild(wrap);
+  }
 }
 
 // ============================================================
