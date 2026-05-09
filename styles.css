@@ -2251,6 +2251,19 @@ select.form-input option { background: var(--bg2); }
   width: 100%;
 }
 
+.rec-toolbar .btn-primary {
+  font-size: 12px;
+  padding: .35rem .75rem;
+  align-self: flex-start;
+  gap: 5px;
+}
+
+/* Modal recordatorios sin scroll */
+#rec-modal {
+  overflow-y: visible;
+  max-height: none;
+}
+
 .rec-toolbar-btns {
   display: flex;
   justify-content: flex-end;
