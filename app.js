@@ -1325,7 +1325,19 @@ async function exportarExcel() {
   const wsP = XLSX.utils.json_to_sheet(pagosRows);
   XLSX.utils.book_append_sheet(wb, wsP, "Pagos");
 
-  // ---- Hoja 3: Lista de espera ----
+  // ---- Hoja 3: Aumentos ----
+  const aumentosRows = Object.entries(aumentos)
+    .sort((a,b) => a[0].localeCompare(b[0]))
+    .map(([mes, d]) => ({
+      "Mes":                   mesLabel(mes),
+      "Aumento":               d.activo ? "Sí" : "No",
+      "Precio Auto/Pickup ($)": d.precioAuto || 0,
+      "Precio Moto ($)":       d.precioMoto || 0
+    }));
+  const wsAu = XLSX.utils.json_to_sheet(aumentosRows);
+  XLSX.utils.book_append_sheet(wb, wsAu, "Aumentos");
+
+  // ---- Hoja 4: Lista de espera ----
   const esperaRows = Object.values(listaEspera)
     .sort((a,b) => (a.fecha||"").localeCompare(b.fecha||""))
     .map((p, i) => ({
@@ -1338,19 +1350,7 @@ async function exportarExcel() {
   const wsE = XLSX.utils.json_to_sheet(esperaRows);
   XLSX.utils.book_append_sheet(wb, wsE, "Lista de espera");
 
-  // ---- Hoja 4: Mantenimiento ----
-  const mantRows = Object.values(mantenimiento)
-    .sort((a,b) => (a.nombre||"").localeCompare(b.nombre||""))
-    .map(p => ({
-      "Apellido y Nombre": p.nombre || "",
-      "Rubro":         p.rubro || "",
-      "WhatsApp":      p.wsp ? "+54 " + p.wsp : "",
-      "Notas":         p.notas || ""
-    }));
-  const wsM = XLSX.utils.json_to_sheet(mantRows);
-  XLSX.utils.book_append_sheet(wb, wsM, "Mantenimiento");
-
-  // ---- Hoja 5: Impuestos y Servicios ----
+  // ---- Hoja 5: Impuestos/Servicios ----
   const gastosRows = [];
   Object.entries(gastos).sort().forEach(([mes, mesDatos]) => {
     Object.values(mesDatos).forEach(g => {
@@ -1364,7 +1364,7 @@ async function exportarExcel() {
     });
   });
   const wsG = XLSX.utils.json_to_sheet(gastosRows);
-  XLSX.utils.book_append_sheet(wb, wsG, "Impuestos y Servicios");
+  XLSX.utils.book_append_sheet(wb, wsG, "Impuestos/Servicios");
 
   // ---- Hoja 6: Facturación ----
   const factRows = Object.values(facturacion)
@@ -1380,23 +1380,46 @@ async function exportarExcel() {
   const wsF = XLSX.utils.json_to_sheet(factRows);
   XLSX.utils.book_append_sheet(wb, wsF, "Facturación");
 
-  // ---- Hoja 7: Aumentos ----
-  const aumentosRows = Object.entries(aumentos)
-    .sort((a,b) => a[0].localeCompare(b[0]))
-    .map(([mes, d]) => ({
-      "Mes":                   mesLabel(mes),
-      "Aumento":               d.activo ? "Sí" : "No",
-      "Precio Auto/Pickup ($)": d.precioAuto || 0,
-      "Precio Moto ($)":       d.precioMoto || 0
+  // ---- Hoja 7: Mantenimiento ----
+  const mantRows = Object.values(mantenimiento)
+    .sort((a,b) => (a.nombre||"").localeCompare(b.nombre||""))
+    .map(p => ({
+      "Apellido y Nombre": p.nombre || "",
+      "Rubro":         p.rubro || "",
+      "WhatsApp":      p.wsp ? "+54 " + p.wsp : "",
+      "Notas":         p.notas || ""
     }));
-  const wsAu = XLSX.utils.json_to_sheet(aumentosRows);
-  XLSX.utils.book_append_sheet(wb, wsAu, "Aumentos");
+  const wsM = XLSX.utils.json_to_sheet(mantRows);
+  XLSX.utils.book_append_sheet(wb, wsM, "Mantenimiento");
 
-  // ---- Hoja 8: Config ----
+  // ---- Hoja 8: Recordatorios ----
+  const recRows = Object.values(recordatorios)
+    .sort((a,b) => (a.proximo||"").localeCompare(b.proximo||""))
+    .map(r => ({
+      "Título":          r.titulo      || "",
+      "Descripción":     r.descripcion || "",
+      "Último control":  mesCorto(r.ultimo),
+      "Próximo control": mesCorto(r.proximo)
+    }));
+  const wsR = XLSX.utils.json_to_sheet(recRows);
+  XLSX.utils.book_append_sheet(wb, wsR, "Recordatorios");
+
+  // ---- Hoja 9: Notas ----
+  const notasRows = Object.values(notas)
+    .sort((a,b) => (a.fecha||"").localeCompare(b.fecha||""))
+    .map(n => ({
+      "Nota":   n.texto || "",
+      "Estado": n.hecha ? "Hecha" : "Pendiente",
+      "Fecha":  n.fecha ? new Date(n.fecha).toLocaleDateString("es-AR") : ""
+    }));
+  const wsN = XLSX.utils.json_to_sheet(notasRows);
+  XLSX.utils.book_append_sheet(wb, wsN, "Notas");
+
+  // ---- Hoja 10: Config ----
   const wsC = XLSX.utils.json_to_sheet([{ "Total de espacios": totalEspacios, "Exportado el": fecha }]);
   XLSX.utils.book_append_sheet(wb, wsC, "Config");
 
-  const fechaArchivo = new Date().toISOString().slice(0, 10);
+    const fechaArchivo = new Date().toISOString().slice(0, 10);
   XLSX.writeFile(wb, `jpsoft-garage-backup-${fechaArchivo}.xlsx`);
   setLastBackup();
   showToast("Backup Excel descargado ✓", "success");
