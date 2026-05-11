@@ -2678,6 +2678,5 @@ document.getElementById("btn-imprimir-cocheras")?.addEventListener("click", () =
     <div class="print-grid">${celdas}</div>
     <div class="print-footer">Impreso desde JPSoft | Garage</div>
   `;
-  //window.print();
-  html2canvas();
+  window.print();
 });
