@@ -2692,8 +2692,13 @@ select.form-input option { background: var(--bg2); }
 /* ===========================
    PRINT STYLES
 =========================== */
+#print-cocheras {
+  display: none;
+}
+
 @media print {
   body * { visibility: hidden; }
+  #print-cocheras { display: block !important; }
   #print-cocheras, #print-cocheras * { visibility: visible; }
   #print-cocheras {
     position: fixed;
