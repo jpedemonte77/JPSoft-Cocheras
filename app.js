@@ -966,7 +966,8 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
 
 // Botón cerrar sesión
 document.getElementById("btn-logout").addEventListener("click", async () => {
-  if (!confirm("¿Cerrar sesión?")) return;
+  const nombre = document.getElementById("user-nombre").textContent || "usuario";
+  if (!confirm(`¿Cerrar sesión como ${nombre}?`)) return;
   await signOut(auth);
 });
 
@@ -1228,10 +1229,24 @@ function getLastBackup() {
 function setLastBackup() {
   const now = new Date().toISOString();
   localStorage.setItem(BACKUP_KEY, now);
+  // Guardar también en Firebase para persistir entre dispositivos
+  set(ref(db, "config/ultimoBackup"), now).catch(() => {});
   renderBackupStatus();
 }
 
 function renderBackupStatus() {
+  // Sincronizar con Firebase si localStorage no tiene fecha
+  const localLast = localStorage.getItem(BACKUP_KEY);
+  if (!localLast && db) {
+    import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js")
+      .then(({ ref: fRef, get }) => get(fRef(db, "config/ultimoBackup")))
+      .then(snap => {
+        if (snap.val()) {
+          localStorage.setItem(BACKUP_KEY, snap.val());
+          renderBackupStatus();
+        }
+      }).catch(() => {});
+  }
   const last   = getLastBackup();
   const lastEl = document.getElementById("backup-last-export");
   const alertEl = document.getElementById("backup-alert-mes");
@@ -2053,6 +2068,25 @@ async function generarReciboPDF(vid, v, p, mes) {
 //  AUMENTOS
 // ============================================================
 let aumentoToggleActivo = false;
+let aumentosSinGuardar  = false;
+
+function marcarCambioAumento() {
+  aumentosSinGuardar = true;
+  const btn = document.getElementById("btn-guardar-aumento");
+  if (btn) {
+    btn.style.background = "#c0391a";
+    btn.title = "Tenés cambios sin guardar";
+  }
+}
+
+function marcarGuardadoAumento() {
+  aumentosSinGuardar = false;
+  const btn = document.getElementById("btn-guardar-aumento");
+  if (btn) {
+    btn.style.background = "";
+    btn.title = "";
+  }
+}
 
 function mesAnterior(clave) {
   const [anio, mes] = clave.split("-").map(Number);
@@ -2173,18 +2207,23 @@ document.getElementById("aumento-toggle").addEventListener("click", () => {
   toggle.classList.toggle("activo", aumentoToggleActivo);
   toggleLbl.textContent = aumentoToggleActivo ? "Con aumento" : "Sin aumento";
   precios.classList.toggle("activo", aumentoToggleActivo);
+  marcarCambioAumento();
 });
 
 // Calcular variaciones en tiempo real al escribir
-document.getElementById("aumento-precio-auto").addEventListener("input", actualizarVariaciones);
-document.getElementById("aumento-precio-moto").addEventListener("input", actualizarVariaciones);
+document.getElementById("aumento-precio-auto").addEventListener("input", () => { actualizarVariaciones(); marcarCambioAumento(); });
+document.getElementById("aumento-precio-moto").addEventListener("input", () => { actualizarVariaciones(); marcarCambioAumento(); });
 
 // Navegación de meses
 document.getElementById("aumentos-mes-prev").addEventListener("click", () => {
+  if (aumentosSinGuardar && !confirm("Tenés cambios sin guardar en este mes. ¿Continuás sin guardar?")) return;
+  marcarGuardadoAumento();
   aumentosMesActivo = mesOffset(aumentosMesActivo, -1);
   renderAumentos();
 });
 document.getElementById("aumentos-mes-next").addEventListener("click", () => {
+  if (aumentosSinGuardar && !confirm("Tenés cambios sin guardar en este mes. ¿Continuás sin guardar?")) return;
+  marcarGuardadoAumento();
   aumentosMesActivo = mesOffset(aumentosMesActivo, +1);
   renderAumentos();
 });
@@ -2200,6 +2239,7 @@ document.getElementById("btn-guardar-aumento").addEventListener("click", async (
   try {
     await set(ref(db, `aumentos/${aumentosMesActivo}`), datos);
     showToast("Aumento guardado ✓", "success");
+    marcarGuardadoAumento();
   } catch (e) {
     showToast("Error al guardar", "error");
     console.error(e);
