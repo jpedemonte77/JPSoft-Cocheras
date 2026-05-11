@@ -2697,6 +2697,7 @@ select.form-input option { background: var(--bg2); }
 }
 
 @media print {
+  @page { size: A4 portrait; margin: 12mm; }
   body * { visibility: hidden; }
   #print-cocheras { display: block !important; }
   #print-cocheras, #print-cocheras * { visibility: visible; }
@@ -2704,34 +2705,38 @@ select.form-input option { background: var(--bg2); }
     position: fixed;
     inset: 0;
     background: #fff;
-    padding: 24px;
+    padding: 12mm;
     font-family: Arial, sans-serif;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
   .print-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #111;
-    padding-bottom: 12px;
-    margin-bottom: 20px;
+    border-bottom: 1.5px solid #111;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
   }
-  .print-title { font-size: 18px; font-weight: 700; color: #111; }
-  .print-fecha { font-size: 12px; color: #666; }
+  .print-title { font-size: 14px; font-weight: 700; color: #111; }
+  .print-fecha { font-size: 10px; color: #666; }
   .print-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    gap: 5px;
   }
   .print-cell {
     border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 10px 8px;
+    border-radius: 4px;
+    padding: 6px 4px;
     text-align: center;
+    page-break-inside: avoid;
   }
-  .print-cell.libre  { background: #f0faf5; border-color: #9fe1cb; }
+  .print-cell.libre   { background: #f0faf5; border-color: #9fe1cb; }
   .print-cell.ocupado { background: #fff5f2; border-color: #f5c4b3; }
-  .print-num  { font-size: 9px; color: #999; margin-bottom: 4px; }
-  .print-nombre { font-size: 11px; font-weight: 600; color: #111; }
-  .print-tipo { font-size: 10px; color: #666; margin-top: 2px; }
-  .print-footer { margin-top: 20px; font-size: 11px; color: #999; text-align: right; }
+  .print-num    { font-size: 8px; color: #999; margin-bottom: 2px; }
+  .print-nombre { font-size: 10px; font-weight: 600; color: #111; }
+  .print-tipo   { font-size: 9px; color: #666; margin-top: 1px; }
+  .print-footer { margin-top: 10px; font-size: 9px; color: #999; text-align: right; }
 }
