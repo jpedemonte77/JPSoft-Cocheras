@@ -1458,10 +1458,15 @@ async function exportarExcel() {
   const wsC = XLSX.utils.json_to_sheet([{ "Total de espacios": totalEspacios, "Exportado el": fecha }]);
   XLSX.utils.book_append_sheet(wb, wsC, "Config");
 
+  try {
     const fechaArchivo = new Date().toISOString().slice(0, 10);
-  XLSX.writeFile(wb, `jpsoft-garage-backup-${fechaArchivo}.xlsx`);
-  setLastBackup();
-  showToast("Backup Excel descargado ✓", "success");
+    XLSX.writeFile(wb, `jpsoft-garage-backup-${fechaArchivo}.xlsx`);
+    setLastBackup();
+    showToast("Backup Excel descargado ✓", "success");
+  } catch(e) {
+    showToast("Error al generar el Excel", "error");
+    console.error(e);
+  }
 }
 
 // ---- IMPORTAR JSON ----
