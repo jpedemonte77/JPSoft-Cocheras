@@ -1640,33 +1640,34 @@ select.form-input option { background: var(--bg2); }
   white-space: nowrap;
 }
 
+/* Excel = verde, JSON = gris */
 .btn-backup-export {
-  background: #f0f0f2;
-  color: #111111;
-  border: 1px solid var(--border2);
-}
-.btn-backup-export:hover { background: #e4e4e6; }
-
-.btn-backup-export.json {
-  background: rgba(79,200,140,0.1);
-  color: #1db87a;
-  border: 1px solid rgba(79,200,140,0.25);
-}
-.btn-backup-export.json:hover { background: rgba(79,200,140,0.2); }
-
-.btn-backup-import {
-  background: rgba(26,158,110,0.1);
+  background: var(--libre-bg);
   color: var(--libre);
   border: 1px solid var(--libre-border);
 }
-.btn-backup-import:hover { background: rgba(26,158,110,0.2); }
+.btn-backup-export:hover { background: rgba(26,158,110,0.15); }
+
+.btn-backup-export.json {
+  background: #f0f0f2;
+  color: #555555;
+  border: 1px solid var(--border2);
+}
+.btn-backup-export.json:hover { background: #e4e4e6; }
+
+.btn-backup-import {
+  background: var(--libre-bg);
+  color: var(--libre);
+  border: 1px solid var(--libre-border);
+}
+.btn-backup-import:hover { background: rgba(26,158,110,0.15); }
 
 .btn-backup-import.json {
-  background: rgba(79,200,140,0.1);
-  color: #1db87a;
-  border: 1px solid rgba(79,200,140,0.25);
+  background: #f0f0f2;
+  color: #555555;
+  border: 1px solid var(--border2);
 }
-.btn-backup-import.json:hover { background: rgba(79,200,140,0.2); }
+.btn-backup-import.json:hover { background: #e4e4e6; }
 
 @media (max-width: 480px) {
   .backup-btns { flex-direction: column; }
