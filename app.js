@@ -2010,6 +2010,7 @@ function renderFacturacion() {
           <div class="fact-field">
             <span class="fact-field-label">Monto</span>
             <span class="fact-field-val mono">${formatMonto(ultimoPago.monto)}</span>
+            <span style="font-size:11px;color:var(--text3);margin-top:1px">Para ARCA: <span style="font-family:'DM Mono',monospace;user-select:text;cursor:text">${Math.round(ultimoPago.monto)}</span></span>
           </div>
           <div class="fact-field">
             <span class="fact-field-label">Método</span>
