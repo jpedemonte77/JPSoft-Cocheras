@@ -1314,15 +1314,17 @@ function exportarJSON() {
 
 // ---- EXPORTAR EXCEL ----
 async function exportarExcel() {
-  // Cargamos SheetJS dinámicamente
-  if (!window.XLSX) {
-    await new Promise((res, rej) => {
-      const s = document.createElement("script");
-      s.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
-      s.onload = res; s.onerror = rej;
-      document.head.appendChild(s);
-    });
-  }
+  try {
+    showToast("Cargando Excel…", "");
+    if (!window.XLSX) {
+      await new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+        s.onload = res;
+        s.onerror = () => rej(new Error("No se pudo cargar SheetJS"));
+        document.head.appendChild(s);
+      });
+    }
 
   const wb = XLSX.utils.book_new();
   const fecha = new Date().toLocaleDateString("es-AR");
@@ -1458,14 +1460,13 @@ async function exportarExcel() {
   const wsC = XLSX.utils.json_to_sheet([{ "Total de espacios": totalEspacios, "Exportado el": fecha }]);
   XLSX.utils.book_append_sheet(wb, wsC, "Config");
 
-  try {
     const fechaArchivo = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(wb, `jpsoft-garage-backup-${fechaArchivo}.xlsx`);
     setLastBackup();
     showToast("Backup Excel descargado ✓", "success");
   } catch(e) {
-    showToast("Error al generar el Excel", "error");
-    console.error(e);
+    showToast("Error al generar el Excel: " + e.message, "error");
+    console.error("Excel error:", e);
   }
 }
 
