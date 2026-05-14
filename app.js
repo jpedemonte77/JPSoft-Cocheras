@@ -2051,6 +2051,16 @@ function renderFacturacion() {
     });
 
 
+    // Helpers comunes para los mensajes
+    const primerNombre = (nombre) => {
+      if (!nombre) return "";
+      const partes = nombre.split(/[,\s]+/).filter(Boolean);
+      // Si formato "Apellido, Nombre" tomar la parte después de la coma
+      if (nombre.includes(",")) return partes[partes.length - 1];
+      return partes[0];
+    };
+    const adminNombre = document.getElementById("user-nombre")?.textContent || "JPSoft | Garage";
+
     // Mail — Enviar factura
     const btnMail = panel.querySelector(".fact-mail-btn");
     if (btnMail && p.mail) {
@@ -2059,11 +2069,17 @@ function renderFacturacion() {
         const cochera = v ? String(v.cochera).padStart(2,"0") : "—";
         const periodo = ultimoPagoMes ? mesLabel(ultimoPagoMes) : "—";
         const monto   = ultimoPago ? formatMonto(ultimoPago.monto) : "—";
+        const nombre  = primerNombre(p.nombre);
         const asunto  = encodeURIComponent(`Factura — Alquiler cochera Nº ${cochera} — ${periodo}`);
         const cuerpo  = encodeURIComponent(
-          `Estimado/a ${p.nombre}:\n\nAdjunto la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.\n\nSaludos,\nJPSoft | Garage`
+          `Hola, ${nombre}!
+
+Te envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.
+
+Saludos!
+${adminNombre}`
         );
-        window.location.href = `mailto:${p.mail}?subject=${asunto}&body=${cuerpo}`;
+        window.open(`mailto:${p.mail}?subject=${asunto}&body=${cuerpo}`, "_blank");
       });
     }
 
@@ -2075,7 +2091,8 @@ function renderFacturacion() {
         const cochera = v ? String(v.cochera).padStart(2,"0") : "—";
         const periodo = ultimoPagoMes ? mesLabel(ultimoPagoMes) : "—";
         const monto   = ultimoPago ? formatMonto(ultimoPago.monto) : "—";
-        const texto   = `Hola ${p.nombre}, le enviamos la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}. Saludos, JPSoft | Garage`;
+        const nombre  = primerNombre(p.nombre);
+        const texto   = `Hola, ${nombre}! Te envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}. Saludos! ${adminNombre}`;
         const num     = wsp.replace(/\D/g, "");
         window.open(`https://wa.me/54${num}?text=${encodeURIComponent(texto)}`, "whatsapp_tab");
       });
