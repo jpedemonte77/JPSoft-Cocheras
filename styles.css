@@ -1962,38 +1962,69 @@ select.form-input option { background: var(--bg2); }
   width: 100%;
 }
 
-.fact-card {
-  display: grid;
-  grid-template-columns: 44px 1fr auto;
-  align-items: center;
-  gap: 12px;
-  background: var(--surface);
+/* Item wrap */
+.fact-item-wrap {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: .875rem 1rem;
-  cursor: pointer;
-  transition: border-color var(--transition), transform .12s;
+  overflow: hidden;
+  transition: border-color var(--transition);
   width: 100%;
   box-sizing: border-box;
 }
+.fact-item-wrap:hover { border-color: var(--border2); }
 
+/* Fila del listado */
+.fact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .875rem 1rem;
+  cursor: pointer;
+  background: var(--surface);
+  transition: background var(--transition);
+  gap: 10px;
+}
+.fact-row:hover { background: var(--bg3); }
+.fact-row.active { background: var(--bg3); }
 
+.fact-row-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.fact-row-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.fact-chevron {
+  font-size: 18px;
+  color: var(--text3);
+  transition: transform .15s;
+  line-height: 1;
+}
+.fact-row.active .fact-chevron { transform: rotate(90deg); }
+
+/* Avatar */
 .fact-avatar {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: #EFF6FF;
   color: #2563EB;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   flex-shrink: 0;
   border: 1px solid #BFDBFE;
 }
-
-.fact-info { min-width: 0; }
 
 .fact-nombre {
   font-size: 14px;
@@ -2004,23 +2035,7 @@ select.form-input option { background: var(--bg2); }
   text-overflow: ellipsis;
 }
 
-.fact-razon {
-  font-size: 12px;
-  color: var(--text3);
-  margin-top: 1px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.fact-detalle {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
+/* Pills condición */
 .fact-condicion-pill {
   font-size: 11px;
   font-weight: 500;
@@ -2034,11 +2049,74 @@ select.form-input option { background: var(--bg2); }
 .pill-ex   { background: #FFFBEB; color: #92400E; border: 1px solid #FDE68A; }
 .pill-otro { background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
 
-.fact-cuit {
+/* Panel detalle */
+.fact-panel {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  animation: slideDown .15s ease;
+}
+
+.fact-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fact-panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.fact-panel-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fact-panel-body {
+  padding: 1rem;
+}
+
+.fact-section-label {
   font-size: 11px;
-  font-family: 'DM Mono', monospace;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 8px;
+}
+
+.fact-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 20px;
+}
+
+.fact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.fact-field-label {
+  font-size: 11px;
   color: var(--text3);
 }
+
+.fact-field-val {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  user-select: text;
+  cursor: text;
+}
+.fact-field-val.mono { font-family: 'DM Mono', monospace; }
 
 .fact-empty {
   text-align: center;
@@ -2048,8 +2126,8 @@ select.form-input option { background: var(--bg2); }
 }
 
 @media (max-width: 480px) {
-  .fact-card { grid-template-columns: 40px 1fr; }
-  .fact-detalle { display: none; }
+  .fact-fields { grid-template-columns: 1fr; }
+  .fact-panel-header { flex-direction: column; align-items: flex-start; }
   .fact-toolbar { gap: .5rem; }
   .btn-arca span { display: none; }
 }
