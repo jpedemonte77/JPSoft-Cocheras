@@ -1405,7 +1405,7 @@ async function exportarExcel() {
     });
   });
   const wsG = XLSX.utils.json_to_sheet(gastosRows);
-  XLSX.utils.book_append_sheet(wb, wsG, "Impuestos/Servicios");
+  XLSX.utils.book_append_sheet(wb, wsG, "Impuestos y Servicios");
 
   // ---- Hoja 6: Facturación ----
   const factRows = Object.values(facturacion)
