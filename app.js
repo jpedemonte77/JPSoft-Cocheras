@@ -2077,9 +2077,15 @@ function renderFacturacion() {
 Te envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.
 
 Saludos!
-${adminNombre}`
+
+
+${adminNombre}.`
         );
-        window.open(`mailto:${p.mail}?subject=${asunto}&body=${cuerpo}`, "_blank");
+        const a = document.createElement("a");
+        a.href = `mailto:${p.mail}?subject=${asunto}&body=${cuerpo}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       });
     }
 
@@ -2092,7 +2098,7 @@ ${adminNombre}`
         const periodo = ultimoPagoMes ? mesLabel(ultimoPagoMes) : "—";
         const monto   = ultimoPago ? formatMonto(ultimoPago.monto) : "—";
         const nombre  = primerNombre(p.nombre);
-        const texto   = `Hola, ${nombre}! Te envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}. Saludos! ${adminNombre}`;
+        const texto   = `Hola, ${nombre}!\n\nTe envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.\n\nSaludos!\n\n\n${adminNombre}.`;
         const num     = wsp.replace(/\D/g, "");
         window.open(`https://wa.me/54${num}?text=${encodeURIComponent(texto)}`, "whatsapp_tab");
       });
