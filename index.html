@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JPSoft | Cocheras</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <div>
+          <div class="login-brand">JPSoft | Cocheras</div>
+          <div class="login-sub">Panel de administración</div>
+        </div>
+      </div>
+      <form id="login-form" autocomplete="off">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="login-email" placeholder="tu@email.com" required autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input type="password" class="form-input" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <p class="login-error" id="login-error"></p>
+        <button type="submit" class="btn-login-submit" id="btn-login">Ingresar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APP WRAPPER -->
+  <div id="app-wrapper" class="hidden">
+
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <span class="sidebar-title">JPSoft | Cocheras</span>
+      </div>
+      <button class="sidebar-close" id="sidebar-close" aria-label="Cerrar menú">✕</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-view="mapa">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Cocheras
+      </a>
+      <a href="#" class="nav-item" data-view="pagos">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Pagos
+      </a>
+      <a href="#" class="nav-item" data-view="vehiculos">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17H3v-5l2.5-5h13L21 12v5h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>
+        Vehículos
+      </a>
+      <a href="#" class="nav-item" data-view="alquileres">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Precios
+      </a>
+      <a href="#" class="nav-item" data-view="aumentos">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Aumentos
+      </a>
+      <a href="#" class="nav-item" data-view="mensajes">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Mensajes
+      </a>
+      <a href="#" class="nav-item" data-view="espera">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><line x1="19" y1="8" x2="22" y2="8"/><line x1="20.5" y1="6.5" x2="20.5" y2="9.5"/></svg>
+        Lista de espera
+      </a>
+      <a href="#" class="nav-item" data-view="gastos">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h10v4H3z"/><line x1="17" y1="17" x2="17" y2="21"/><line x1="15" y1="19" x2="19" y2="19"/></svg>
+        Impuestos y Servicios
+      </a>
+      <a href="#" class="nav-item" data-view="facturacion">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Facturación
+      </a>
+      <a href="#" class="nav-item" data-view="mantenimiento">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Mantenimiento
+      </a>
+      <a href="#" class="nav-item" data-view="recordatorios">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Recordatorios
+      </a>
+      <a href="#" class="nav-item" data-view="notas">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Notas
+      </a>
+      <a href="#" class="nav-item nav-item-backup" data-view="backup">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Backup
+      </a>
+    </nav>
+  </aside>
+
+  <!-- OVERLAY SIDEBAR MOBILE -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- MAIN -->
+  <div class="main-wrapper">
+    <header class="topbar">
+      <button class="menu-btn" id="menu-btn" aria-label="Abrir menú">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <h1 class="topbar-title" id="topbar-title">Cocheras</h1>
+      <div class="topbar-actions">
+        <div class="stats-mini">
+          <span class="stat-pill libre" id="mini-libres">— libres</span>
+          <span class="stat-pill ocupado" id="mini-ocupados">— ocupados</span>
+        </div>
+        <div class="user-chip">
+          <span class="user-nombre" id="user-nombre"></span>
+          <button class="btn-logout" id="btn-logout" title="Cerrar sesión">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+        <button class="btn-primary" id="btn-nuevo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Registrar
+        </button>
+      </div>
+    </header>
+
+    <!-- VIEW: MAPA -->
+    <main class="view active" id="view-mapa">
+      <div class="mapa-controles">
+        <label class="control-label">Total de espacios:</label>
+        <div class="espacio-selector">
+          <button class="esp-btn" id="esp-minus">−</button>
+          <span class="esp-num" id="esp-num">20</span>
+          <button class="esp-btn" id="esp-plus">+</button>
+        </div>
+      </div>
+      <div class="cocheras-grid" id="cocheras-grid"></div>
+      <div class="mapa-footer">
+        <div class="leyenda">
+          <span class="leyenda-item"><span class="dot libre"></span> Libre</span>
+          <span class="leyenda-item"><span class="dot ocupado"></span> Ocupado</span>
+        </div>
+        <button class="btn-imprimir" id="btn-imprimir-cocheras">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Descargar PNG
+        </button>
+      </div>
+    </main>
+
+    <!-- VIEW: VEHÍCULOS -->
+    <main class="view" id="view-vehiculos">
+      <div class="view-toolbar">
+        <input type="search" class="search-input" id="search-vehiculos" placeholder="Buscar por nombre, patente o cochera…" />
+        <select class="filter-select" id="filter-tipo">
+          <option value="">Todos los tipos</option>
+          <option value="auto">Auto</option>
+          <option value="moto">Moto</option>
+          <option value="camioneta">Camioneta / SUV</option>
+          <option value="pickup">Pickup</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div class="vehiculos-grid" id="vehiculos-grid"></div>
+    </main>
+
+    <!-- VIEW: ALQUILERES -->
+    <main class="view" id="view-alquileres">
+      <div class="alquiler-header">
+        <div class="alquiler-total-card">
+          <p class="alq-label">Recaudación mensual total</p>
+          <p class="alq-total" id="alq-total">$ 0</p>
+        </div>
+        <div class="alquiler-ajuste-card">
+          <p class="alq-label">Ajuste global de precios</p>
+          <div class="ajuste-form">
+            <select id="ajuste-tipo" class="filter-select" style="width:auto">
+              <option value="porcentaje">Por porcentaje (%)</option>
+              <option value="monto">Nuevo monto fijo ($)</option>
+            </select>
+            <input type="number" id="ajuste-valor" class="ajuste-input" placeholder="Ej: 15" min="0" />
+            <button class="btn-primary" id="btn-aplicar-ajuste">Aplicar a todos</button>
+          </div>
+        </div>
+      </div>
+      <div class="alquileres-list" id="alquileres-list"></div>
+    </main>
+    <!-- VIEW: PAGOS -->
+    <main class="view" id="view-pagos">
+
+      <!-- Selector de mes -->
+      <div class="pagos-toolbar">
+        <div class="mes-nav">
+          <button class="esp-btn" id="mes-prev">‹</button>
+          <span class="mes-label" id="mes-label">—</span>
+          <button class="esp-btn" id="mes-next">›</button>
+        </div>
+        <div class="pagos-resumen-pills">
+          <span class="resumen-pill pagados" id="pill-pagados">— pagados</span>
+          <span class="resumen-pill pendientes" id="pill-pendientes">— pendientes</span>
+        </div>
+      </div>
+
+      <!-- Resumen por administrador -->
+      <div class="admins-resumen" id="admins-resumen">
+        <div class="admin-card" id="admin-joaquin">
+          <div class="admin-nombre">Joaquín</div>
+          <div class="admin-totales">
+            <span class="admin-pill efectivo">💵 Efectivo: <strong id="jq-ef">$ 0</strong></span>
+            <span class="admin-pill transferencia">📲 Transf.: <strong id="jq-tr">$ 0</strong></span>
+            <span class="admin-pill total-admin">Total: <strong id="jq-tot">$ 0</strong></span>
+          </div>
+        </div>
+        <div class="admin-card" id="admin-federico">
+          <div class="admin-nombre">Federico</div>
+          <div class="admin-totales">
+            <span class="admin-pill efectivo">💵 Efectivo: <strong id="fd-ef">$ 0</strong></span>
+            <span class="admin-pill transferencia">📲 Transf.: <strong id="fd-tr">$ 0</strong></span>
+            <span class="admin-pill total-admin">Total: <strong id="fd-tot">$ 0</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de inquilinos -->
+      <div class="pagos-list" id="pagos-list"></div>
+
+    </main>
+
+    <!-- VIEW: LISTA DE ESPERA -->
+    <main class="view" id="view-espera">
+      <div class="espera-toolbar">
+        <div class="espera-counter" id="espera-counter">
+          <span class="espera-badge" id="espera-total">0 en espera</span>
+        </div>
+        <button class="btn-primary" id="btn-nuevo-espera">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Agregar
+        </button>
+      </div>
+      <div class="espera-list" id="espera-list"></div>
+    </main>
+
+    <!-- VIEW: MANTENIMIENTO -->
+    <main class="view" id="view-mantenimiento">
+      <div class="espera-toolbar">
+        <div class="espera-counter">
+          <span class="espera-badge mant-badge" id="mant-total">0 contactos</span>
+        </div>
+        <button class="btn-primary" id="btn-nuevo-mant">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Agregar
+        </button>
+      </div>
+      <div class="espera-list" id="mant-list"></div>
+    </main>
+
+    <!-- VIEW: GASTOS -->
+    <main class="view" id="view-gastos">
+
+      <!-- Header con mes y total -->
+      <div class="gastos-header">
+        <div class="mes-nav">
+          <button class="esp-btn" id="gastos-mes-prev">‹</button>
+          <span class="mes-label" id="gastos-mes-label">—</span>
+          <button class="esp-btn" id="gastos-mes-next">›</button>
+        </div>
+        <div class="gastos-total-wrap">
+          <span class="gastos-total-label">Total del mes:</span>
+          <span class="gastos-total-valor" id="gastos-total">$ 0</span>
+        </div>
+        <button class="btn-primary" id="btn-nuevo-gasto">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Agregar
+        </button>
+      </div>
+
+      <div class="gastos-list" id="gastos-list"></div>
+
+    </main>
+
+    <!-- VIEW: MENSAJES -->
+    <main class="view" id="view-mensajes">
+
+      <!-- MENSAJE GENERAL -->
+      <div class="msg-section">
+        <div class="msg-section-header">
+          <div class="msg-section-icon general">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <h3 class="msg-section-title">Mensaje general</h3>
+            <p class="msg-section-desc">Escribí el mensaje y envialo a todos los inquilinos con WhatsApp.</p>
+          </div>
+        </div>
+        <textarea class="msg-textarea" id="msg-general-texto" placeholder="Ej: Les informamos que a partir del próximo mes el valor del alquiler se actualiza a…"></textarea>
+        <div class="msg-general-actions">
+          <span class="msg-counter" id="msg-general-counter">0 inquilinos con WhatsApp</span>
+          <button class="btn-primary" id="btn-msg-general-preview">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ver destinatarios
+          </button>
+        </div>
+        <!-- Lista de botones por inquilino -->
+        <div class="msg-destinatarios hidden" id="msg-destinatarios">
+          <p class="msg-destinatarios-label">Tocá cada botón para abrir WhatsApp con el mensaje listo:</p>
+          <div class="msg-btns-grid" id="msg-btns-grid"></div>
+        </div>
+      </div>
+
+      <!-- MENSAJE PARTICULAR -->
+      <div class="msg-section">
+        <div class="msg-section-header">
+          <div class="msg-section-icon particular">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <h3 class="msg-section-title">Mensaje particular</h3>
+            <p class="msg-section-desc">Elegí un inquilino y escribí el mensaje para enviárselo por WhatsApp.</p>
+          </div>
+        </div>
+        <div class="msg-particular-form">
+          <select class="form-input" id="msg-particular-inquilino">
+            <option value="">— Seleccioná un inquilino —</option>
+          </select>
+          <textarea class="msg-textarea" id="msg-particular-texto" placeholder="Escribí tu mensaje aquí…"></textarea>
+          <div class="msg-particular-actions">
+            <button class="btn-wsp" id="btn-msg-particular">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.99 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.985-1.31A9.954 9.954 0 0 0 11.99 22C17.522 22 22 17.523 22 12S17.522 2 11.99 2zm.01 18.181a8.17 8.17 0 0 1-4.165-1.138l-.299-.177-3.093.812.825-3.02-.194-.31A8.185 8.185 0 0 1 3.818 12C3.818 7.479 7.48 3.818 12 3.818c4.522 0 8.182 3.661 8.182 8.182 0 4.522-3.66 8.181-8.182 8.181z"/></svg>
+              Enviar por WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- VIEW: FACTURACIÓN -->
+    <main class="view" id="view-facturacion">
+
+      <div class="fact-toolbar">
+        <div>
+          <span class="espera-badge fact-badge" id="fact-total">0 contribuyentes</span>
+        </div>
+        <button class="btn-primary" id="btn-nuevo-fact">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Agregar
+        </button>
+      </div>
+
+      <div class="fact-list" id="fact-list"></div>
+
+    </main>
+
+    <!-- VIEW: AUMENTOS -->
+    <main class="view" id="view-aumentos">
+
+      <!-- Header -->
+      <div class="aumentos-header">
+        <div class="mes-nav">
+          <button class="esp-btn" id="aumentos-mes-prev">‹</button>
+          <span class="mes-label" id="aumentos-mes-label">—</span>
+          <button class="esp-btn" id="aumentos-mes-next">›</button>
+        </div>
+        <button class="btn-primary" id="btn-guardar-aumento">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13"/><polyline points="7 3 7 8 15 8"/></svg>
+          Guardar
+        </button>
+      </div>
+
+      <!-- Formulario del mes -->
+      <div class="aumentos-form-card">
+        <div class="aumentos-toggle-row">
+          <span class="aumentos-toggle-label">¿Hubo aumento este mes?</span>
+          <div class="aumento-toggle" id="aumento-toggle">
+            <div class="toggle-switch"></div>
+            <span class="toggle-label" id="aumento-toggle-label">Sin aumento</span>
+          </div>
+        </div>
+        <div class="aumentos-precios" id="aumentos-precios">
+          <div class="aumento-precio-group">
+            <label class="form-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17H3v-4l2-5h14l2 5v4h-2"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></svg>
+              Auto / Pickup
+            </label>
+            <div class="aumento-precio-input">
+              <span class="prefix">$</span>
+              <input type="number" class="form-input" id="aumento-precio-auto" placeholder="Ej: 80000" min="0" />
+            </div>
+            <div class="aumento-variacion" id="var-auto"></div>
+          </div>
+          <div class="aumento-precio-group">
+            <label class="form-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 16H3v-3l1.5-4h15L21 13v3h-2"/><circle cx="7" cy="16.5" r="1.5"/><circle cx="17" cy="16.5" r="1.5"/></svg>
+              Moto
+            </label>
+            <div class="aumento-precio-input">
+              <span class="prefix">$</span>
+              <input type="number" class="form-input" id="aumento-precio-moto" placeholder="Ej: 40000" min="0" />
+            </div>
+            <div class="aumento-variacion" id="var-moto"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Historial -->
+      <div class="aumentos-historial">
+        <div class="aumentos-historial-title">Historial de aumentos</div>
+        <div class="aumentos-tabla-wrap">
+          <table class="aumentos-tabla" id="aumentos-tabla">
+            <thead>
+              <tr>
+                <th>Mes / Año</th>
+                <th>Aumento</th>
+                <th>Auto / Pickup</th>
+                <th>Moto</th>
+              </tr>
+            </thead>
+            <tbody id="aumentos-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- VIEW: RECORDATORIOS -->
+    <main class="view" id="view-recordatorios">
+
+      <div class="rec-toolbar">
+        <div id="rec-alertas-banner" class="rec-alertas-banner hidden"></div>
+        <button class="btn-primary" id="btn-nuevo-rec">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nuevo recordatorio
+        </button>
+      </div>
+
+      <div class="rec-list" id="rec-list"></div>
+
+    </main>
+
+    <!-- VIEW: NOTAS -->
+    <main class="view" id="view-notas">
+
+      <div class="notas-toolbar">
+        <div class="notas-filtros">
+          <button class="notas-filtro-btn active" data-filtro="pendientes">Pendientes</button>
+          <button class="notas-filtro-btn" data-filtro="todas">Todas</button>
+          <button class="notas-filtro-btn" data-filtro="hechas">Hechas</button>
+        </div>
+      </div>
+
+      <!-- Input rápido -->
+      <div class="notas-input-rapido">
+        <input type="text" class="form-input" id="nota-rapida-input" placeholder="Escribí una nota y presioná Enter… Ej: Comprar tubos de luz" />
+        <button class="btn-primary" id="btn-nota-rapida-add">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="btn-texto-pc">Nueva nota</span>
+        </button>
+      </div>
+
+      <div class="notas-list" id="notas-list"></div>
+
+    </main>
+
+    <!-- VIEW: BACKUP -->
+    <main class="view" id="view-backup">
+      <div class="backup-section">
+
+        <!-- EXPORTAR -->
+        <div class="backup-card">
+          <div class="backup-card-header">
+            <div class="backup-icon export-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div>
+              <h3 class="backup-card-title">Exportar backup</h3>
+              <p class="backup-card-desc">Descargá todos los datos del sistema en el formato que prefieras.</p>
+            </div>
+          </div>
+          <div class="backup-alert hidden" id="backup-alert-mes">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Hace más de 30 días que no hacés un backup. ¡Te recomendamos exportar ahora!
+          </div>
+          <div class="backup-last" id="backup-last-export">Último backup: nunca</div>
+          <div class="backup-btns">
+            <button class="btn-backup-export" id="btn-export-excel">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              Exportar Excel
+            </button>
+            <button class="btn-backup-export json" id="btn-export-json">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Exportar JSON
+            </button>
+          </div>
+        </div>
+
+        <!-- IMPORTAR -->
+        <div class="backup-card">
+          <div class="backup-card-header">
+            <div class="backup-icon import-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <div>
+              <h3 class="backup-card-title">Restaurar backup</h3>
+              <p class="backup-card-desc">Importá un archivo exportado previamente por esta app. <strong>Reemplaza todos los datos actuales.</strong></p>
+            </div>
+          </div>
+          <div class="backup-warning">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Esta acción reemplaza TODOS los datos existentes en Firebase. Asegurate de tener un backup reciente antes de restaurar.
+          </div>
+          <div class="backup-btns">
+            <label class="btn-backup-import" for="input-import-excel">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              Importar Excel
+              <input type="file" id="input-import-excel" accept=".xlsx" style="display:none" />
+            </label>
+            <label class="btn-backup-import json" for="input-import-json">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Importar JSON
+              <input type="file" id="input-import-json" accept=".json" style="display:none" />
+            </label>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- MODAL GASTOS -->
+  <div class="modal-overlay hidden" id="gastos-modal-overlay">
+    <div class="modal modal-sm" id="gastos-modal">
+      <div class="modal-header">
+        <h2 class="modal-titulo" id="gastos-modal-titulo">Agregar gasto</h2>
+        <button class="modal-close" id="gastos-modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Detalle <span class="req">*</span></label>
+          <input type="text" class="form-input" id="gasto-detalle" placeholder="Ej: Luz, Seguro, Arreglo tanque…" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Monto ($) <span class="req">*</span></label>
+          <input type="number" class="form-input mono" id="gasto-monto" placeholder="Ej: 15000" min="0" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Categoría</label>
+          <select class="form-input" id="gasto-categoria">
+            <option value="servicio">Servicio (Luz, Gas, Agua…)</option>
+            <option value="impuesto">Impuesto / Tasa municipal</option>
+            <option value="seguro">Seguro</option>
+            <option value="mantenimiento">Mantenimiento / Reparación</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notas</label>
+          <textarea class="form-input form-textarea" id="gasto-notas" placeholder="Observaciones…" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-danger hidden" id="gasto-btn-eliminar">Eliminar</button>
+        <div class="modal-footer-right">
+          <button class="btn-secondary" id="gasto-btn-cancelar">Cancelar</button>
+          <button class="btn-primary" id="gasto-btn-guardar">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FACTURACIÓN -->
+  <div class="modal-overlay hidden" id="fact-modal-overlay">
+    <div class="modal modal-sm" id="fact-modal">
+      <div class="modal-header">
+        <h2 class="modal-titulo" id="fact-modal-titulo">Agregar contribuyente</h2>
+        <button class="modal-close" id="fact-modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Apellido y Nombre <span class="req">*</span></label>
+            <input type="text" class="form-input" id="fact-nombre" placeholder="Ghiggino, Omar" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Razón Social</label>
+            <input type="text" class="form-input" id="fact-razon" placeholder="Ej: STINE SEED Argentina SRL" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Condición frente al IVA <span class="req">*</span></label>
+          <select class="form-input" id="fact-condicion">
+            <option value="">Seleccionar…</option>
+            <option value="responsable_inscripto">IVA Responsable Inscripto</option>
+            <option value="sujeto_exento">IVA Sujeto Exento</option>
+            <option value="consumidor_final">Consumidor Final</option>
+            <option value="monotributo">Responsable Monotributo</option>
+            <option value="no_categorizado">Sujeto No Categorizado</option>
+            <option value="proveedor_exterior">Proveedor del Exterior</option>
+            <option value="cliente_exterior">Cliente del Exterior</option>
+            <option value="iva_liberado">IVA Liberado - Ley Nº 19.640</option>
+            <option value="monotributista_social">Monotributista Social</option>
+            <option value="iva_no_alcanzado">IVA No Alcanzado</option>
+            <option value="monotributista_independiente">Monotributista Trabajador Indep. Promovido</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">CUIT / CUIL</label>
+            <input type="text" class="form-input mono" id="fact-cuit" placeholder="20-12990970-7" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">DNI</label>
+            <input type="text" class="form-input mono" id="fact-dni" placeholder="12.990.970" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mail</label>
+          <input type="email" class="form-input" id="fact-mail" placeholder="ejemplo@gmail.com" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notas</label>
+          <textarea class="form-input form-textarea" id="fact-notas" placeholder="Observaciones…" rows="2"></textarea>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn-danger hidden" id="fact-btn-eliminar">Eliminar</button>
+        <div class="modal-footer-right">
+          <button class="btn-secondary" id="fact-btn-cancelar">Cancelar</button>
+          <button class="btn-primary" id="fact-btn-guardar">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL RECORDATORIOS -->
+  <div class="modal-overlay hidden" id="rec-modal-overlay">
+    <div class="modal modal-sm" id="rec-modal">
+      <div class="modal-header">
+        <h2 class="modal-titulo" id="rec-modal-titulo">Nuevo recordatorio</h2>
+        <button class="modal-close" id="rec-modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Título <span class="req">*</span></label>
+          <input type="text" class="form-input" id="rec-titulo" placeholder="Ej: Control de matafuegos" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descripción</label>
+          <textarea class="form-input form-textarea" id="rec-descripcion" placeholder="Detalles opcionales…" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Último control <span class="req">*</span></label>
+          <div class="rec-fecha-selects">
+            <select class="form-input" id="rec-ultimo-mes">
+              <option value="">Mes</option>
+              <option value="01">Enero</option><option value="02">Febrero</option>
+              <option value="03">Marzo</option><option value="04">Abril</option>
+              <option value="05">Mayo</option><option value="06">Junio</option>
+              <option value="07">Julio</option><option value="08">Agosto</option>
+              <option value="09">Septiembre</option><option value="10">Octubre</option>
+              <option value="11">Noviembre</option><option value="12">Diciembre</option>
+            </select>
+            <input type="number" class="form-input" id="rec-ultimo-anio" placeholder="Año" min="2020" max="2099" style="width:100px" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Próximo control <span class="req">*</span></label>
+          <div class="rec-fecha-selects">
+            <select class="form-input" id="rec-proximo-mes">
+              <option value="">Mes</option>
+              <option value="01">Enero</option><option value="02">Febrero</option>
+              <option value="03">Marzo</option><option value="04">Abril</option>
+              <option value="05">Mayo</option><option value="06">Junio</option>
+              <option value="07">Julio</option><option value="08">Agosto</option>
+              <option value="09">Septiembre</option><option value="10">Octubre</option>
+              <option value="11">Noviembre</option><option value="12">Diciembre</option>
+            </select>
+            <input type="number" class="form-input" id="rec-proximo-anio" placeholder="Año" min="2020" max="2099" style="width:100px" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-danger hidden" id="rec-btn-eliminar">Eliminar</button>
+        <div class="modal-footer-right">
+          <button class="btn-secondary" id="rec-btn-cancelar">Cancelar</button>
+          <button class="btn-primary" id="rec-btn-guardar">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL REGISTRO -->
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 class="modal-titulo" id="modal-titulo">Registrar vehículo</h2>
+        <button class="modal-close" id="modal-close" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Fila 1: Nombre + Cochera -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Apellido y Nombre <span class="req">*</span></label>
+            <input type="text" class="form-input" id="f-nombre" placeholder="García, Juan" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cochera Nº <span class="req">*</span></label>
+            <select class="form-input" id="f-cochera"></select>
+          </div>
+        </div>
+
+        <!-- Fila 2: DNI + Domicilio -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">DNI</label>
+            <input type="text" class="form-input mono" id="f-dni" placeholder="Ej: 30.123.456" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Domicilio</label>
+            <input type="text" class="form-input" id="f-domicilio" placeholder="Ej: San Martín 1234" />
+          </div>
+        </div>
+
+        <!-- Fila 3: Patente + Tipo -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Patente <span class="req">*</span></label>
+            <input type="text" class="form-input mono" id="f-patente" placeholder="ABC 123 / AB 123 CD" style="text-transform:uppercase" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo de vehículo</label>
+            <select class="form-input" id="f-tipo">
+              <option value="auto">Auto</option>
+              <option value="moto">Moto</option>
+              <option value="camioneta">Camioneta / SUV</option>
+              <option value="pickup">Pickup</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Fila 4: Marca y modelo + Seguro -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Marca y modelo</label>
+            <input type="text" class="form-input" id="f-modelo" placeholder="Ej: Ford Focus 2021" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Seguro</label>
+            <input type="text" class="form-input" id="f-seguro" placeholder="Ej: Mapfre, La Caja…" />
+          </div>
+        </div>
+
+        <!-- Fila 5: WhatsApp + Monto -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">WhatsApp</label>
+            <div class="input-prefix">
+              <span class="prefix">+54</span>
+              <input type="tel" class="form-input" id="f-wsp" placeholder="341 555 1234" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Monto de alquiler ($)</label>
+            <input type="number" class="form-input" id="f-monto" placeholder="Ej: 50000" min="0" />
+          </div>
+        </div>
+
+        <!-- Cédula: frente y dorso -->
+        <div class="form-group">
+          <label class="form-label">Cédula del vehículo</label>
+          <div class="cedula-grid">
+
+            <div class="file-drop" id="file-drop-frente">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span class="file-drop-label">Frente</span>
+              <label class="file-link" for="f-cedula-frente">Seleccionar foto</label>
+              <input type="file" id="f-cedula-frente" accept="image/*" style="display:none" />
+              <div class="file-preview-wrap hidden" id="preview-wrap-frente">
+                <img id="preview-frente" class="file-preview" alt="Cédula frente" />
+                <button type="button" class="file-remove" id="remove-frente">✕</button>
+              </div>
+            </div>
+
+            <div class="file-drop" id="file-drop-dorso">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span class="file-drop-label">Dorso</span>
+              <label class="file-link" for="f-cedula-dorso">Seleccionar foto</label>
+              <input type="file" id="f-cedula-dorso" accept="image/*" style="display:none" />
+              <div class="file-preview-wrap hidden" id="preview-wrap-dorso">
+                <img id="preview-dorso" class="file-preview" alt="Cédula dorso" />
+                <button type="button" class="file-remove" id="remove-dorso">✕</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Notas -->
+        <div class="form-group">
+          <label class="form-label">Notas</label>
+          <textarea class="form-input form-textarea" id="f-notas" placeholder="Observaciones, aclaraciones…" rows="2"></textarea>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn-danger hidden" id="btn-eliminar">Eliminar</button>
+        <div class="modal-footer-right">
+          <button class="btn-secondary" id="btn-cancelar">Cancelar</button>
+          <button class="btn-primary" id="btn-guardar">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL MANTENIMIENTO -->
+  <div class="modal-overlay hidden" id="mant-modal-overlay">
+    <div class="modal modal-sm" id="mant-modal">
+      <div class="modal-header">
+        <h2 class="modal-titulo" id="mant-modal-titulo">Agregar contacto</h2>
+        <button class="modal-close" id="mant-modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Apellido y Nombre <span class="req">*</span></label>
+          <input type="text" class="form-input" id="mant-nombre" placeholder="Gaute, Martín" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rubro <span class="req">*</span></label>
+          <input type="text" class="form-input" id="mant-rubro" placeholder="Ej: Electricista, Plomero, Albañil…" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">WhatsApp</label>
+          <div class="input-prefix">
+            <span class="prefix">+54</span>
+            <input type="tel" class="form-input" id="mant-wsp" placeholder="9 3436 43-7754" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notas</label>
+          <textarea class="form-input form-textarea" id="mant-notas" placeholder="Observaciones…" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-danger hidden" id="mant-btn-eliminar">Eliminar</button>
+        <div class="modal-footer-right">
+          <button class="btn-secondary" id="mant-btn-cancelar">Cancelar</button>
+          <button class="btn-primary" id="mant-btn-guardar">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LISTA DE ESPERA -->
+  <div class="modal-overlay hidden" id="espera-modal-overlay">
+    <div class="modal modal-sm" id="espera-modal">
+      <div class="modal-header">
+        <h2 class="modal-titulo" id="espera-modal-titulo">Agregar a lista de espera</h2>
+        <button class="modal-close" id="espera-modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Apellido y Nombre <span class="req">*</span></label>
+          <input type="text" class="form-input" id="esp-nombre" placeholder="García, Juan" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">WhatsApp</label>
+          <div class="input-prefix">
+            <span class="prefix">+54</span>
+            <input type="tel" class="form-input" id="esp-wsp" placeholder="341 555 1234" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notas</label>
+          <textarea class="form-input form-textarea" id="esp-notas" placeholder="Tipo de vehículo, preferencias…" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-danger hidden" id="esp-btn-eliminar">Eliminar</button>
+        <div class="modal-footer-right">
+          <button class="btn-secondary" id="esp-btn-cancelar">Cancelar</button>
+          <button class="btn-primary" id="esp-btn-guardar">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DETALLE -->
+  <div class="modal-overlay hidden" id="detalle-overlay">
+    <div class="modal modal-sm" id="detalle-modal">
+      <div class="modal-header">
+        <h2 class="modal-titulo" id="detalle-titulo">Cochera Nº —</h2>
+        <button class="modal-close" id="detalle-close">✕</button>
+      </div>
+      <div class="modal-body" id="detalle-body"></div>
+      <div class="modal-footer">
+        <div class="modal-footer-right">
+          <button class="btn-secondary" id="detalle-editar">Editar</button>
+          <button class="btn-wsp hidden" id="detalle-wsp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.99 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.985-1.31A9.954 9.954 0 0 0 11.99 22C17.522 22 22 17.523 22 12S17.522 2 11.99 2zm.01 18.181a8.17 8.17 0 0 1-4.165-1.138l-.299-.177-3.093.812.825-3.02-.194-.31A8.185 8.185 0 0 1 3.818 12C3.818 7.479 7.48 3.818 12 3.818c4.522 0 8.182 3.661 8.182 8.182 0 4.522-3.66 8.181-8.182 8.181z"/></svg>
+            Enviar WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast hidden" id="toast"></div>
+
+  </div><!-- /app-wrapper -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
