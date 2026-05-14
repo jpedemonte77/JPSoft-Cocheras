@@ -932,8 +932,8 @@ setupFileDrop("file-drop-dorso",  "f-cedula-dorso",  "preview-dorso",  "preview-
 
 // Nombres para mostrar según email
 const ADMIN_NOMBRES = {
-  "joaquin@jpsoft-garage.com": "Joaquín",
-  "federico@jpsoft-garage.com": "Federico"
+  "joaquin@jpsoft-cocheras.com": "Joaquín",
+  "federico@jpsoft-cocheras.com": "Federico"
 };
 
 function mostrarApp(user) {
