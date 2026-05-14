@@ -2079,7 +2079,10 @@ Te envío la factura correspondiente al alquiler de la cochera Nº ${cochera} de
 Saludos!
 
 
-${adminNombre}.`
+${adminNombre}.
+
+
+JPSoft | Cocheras`
         );
         const a = document.createElement("a");
         a.href = `mailto:${p.mail}?subject=${asunto}&body=${cuerpo}`;
@@ -2098,7 +2101,7 @@ ${adminNombre}.`
         const periodo = ultimoPagoMes ? mesLabel(ultimoPagoMes) : "—";
         const monto   = ultimoPago ? formatMonto(ultimoPago.monto) : "—";
         const nombre  = primerNombre(p.nombre);
-        const texto   = `Hola, ${nombre}!\n\nTe envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.\n\nSaludos!\n\n\n${adminNombre}.`;
+        const texto   = `Hola, ${nombre}!\n\nTe envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.\n\nSaludos!\n\n\n${adminNombre}.\n\n\nJPSoft | Cocheras`;
         const num     = wsp.replace(/\D/g, "");
         window.open(`https://wa.me/54${num}?text=${encodeURIComponent(texto)}`, "whatsapp_tab");
       });
