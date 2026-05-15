@@ -2894,3 +2894,42 @@ select.form-input option { background: var(--bg2); }
   white-space: nowrap;
 }
 .btn-wsp-fact:hover { background: #1aaa52; }
+
+/* ===========================
+   DEVELOPER CREDIT
+=========================== */
+.dev-credit {
+  padding: 8px 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dev-credit-nombre {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--text2);
+}
+
+.dev-credit-sub {
+  font-size: 8.5px;
+  color: var(--text3);
+}
+
+.dev-credit-wsp {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 8.5px;
+  font-weight: 500;
+}
+
+.dev-credit-wsp svg {
+  color: #25D366;
+  flex-shrink: 0;
+}
+
+.dev-credit-wsp:hover { opacity: .75; }
