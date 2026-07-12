@@ -1,5 +1,5 @@
 // JPSoft | Cocheras — Service Worker
-const CACHE_NAME = "jpsoft-cocheras-v4";
+const CACHE_NAME = "jpsoft-cocheras-v5";
 
 const STATIC_ASSETS = [
   "./index.html",
