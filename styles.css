@@ -138,6 +138,7 @@ body { background: var(--bg); color: var(--text); display: flex; min-height: 100
   gap: 1rem;
   padding: 0 1.5rem;
   height: 60px;
+  min-height: 60px;
   background: #ffffff;
   border-bottom: 1px solid var(--border);
   position: sticky;
