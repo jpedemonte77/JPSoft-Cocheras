@@ -2907,8 +2907,6 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js")
       .then((reg) => {
         console.log("[SW] Registrado:", reg.scope);
-
-        // Detectar nueva versión disponible
         reg.addEventListener("updatefound", () => {
           const newWorker = reg.installing;
           newWorker.addEventListener("statechange", () => {
