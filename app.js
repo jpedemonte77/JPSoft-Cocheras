@@ -53,13 +53,6 @@ let gastos        = {};   // { "YYYY-MM": { id: { detalle, monto, categoria, not
 let gastosEditId  = null;
 let facturacion   = {};   // { id: { nombre, razon, condicion, cuit, dni, notas } }
 let factEditId    = null;
-let factEmitidas  = {};   // { pushId: { fid, periodo, monto, cae, nro, fecha, pdf } }
-let s360Token     = null; // Token API Sistemas 360 (se guarda en Firebase, no en el código)
-
-// ============================================================
-//  🧾 FACTURACIÓN ELECTRÓNICA — API SISTEMAS 360
-// ============================================================
-const S360_URL = "https://api.sistemas360.ar/api/comprobantes";
 let aumentos      = {};   // { "YYYY-MM": { activo, precioAuto, precioMoto, notas } }
 let aumentosMesActivo = (() => { const h = new Date(); return `${h.getFullYear()}-${String(h.getMonth()+1).padStart(2,"0")}`; })();
 let recordatorios = {};   // { id: { titulo, descripcion, ultimo, proximo } }
@@ -131,15 +124,6 @@ function initFirebase() {
   onValue(ref(db, "facturacion"), (snap) => {
     facturacion = snap.val() || {};
     renderFacturacion();
-  });
-
-  onValue(ref(db, "factEmitidas"), (snap) => {
-    factEmitidas = snap.val() || {};
-    renderFacturacion();
-  });
-
-  onValue(ref(db, "config/facturacion/s360token"), (snap) => {
-    s360Token = snap.val() || null;
   });
 
   onValue(ref(db, "aumentos"), (snap) => {
@@ -1919,133 +1903,6 @@ const CONDICIONES = {
   monotributista_independiente: { label: "Monotributista Trabajador Indep. Promovido", pill: "pill-mono" }
 };
 
-// ============================================================
-//  EMISIÓN DE FACTURA ELECTRÓNICA — API SISTEMAS 360
-// ============================================================
-
-// Mapeo condición IVA interna → valor API
-const S360_CONDICION = {
-  responsable_inscripto: "responsable_inscripto",
-  monotributo:           "monotributo",
-  consumidor_final:      "consumidor_final",
-  sujeto_exento:         "exento",
-};
-
-async function configurarTokenS360() {
-  const actual = s360Token ? `\n\nToken actual: ${s360Token.slice(0, 12)}…` : "";
-  const token = prompt(`Pegá tu token de API Sistemas 360:${actual}`);
-  if (token === null) return;
-  const limpio = token.trim();
-  if (!limpio) { showToast("Token vacío", "error"); return; }
-  await set(ref(db, "config/facturacion/s360token"), limpio);
-  showToast("Token guardado ✓", "success");
-}
-
-async function emitirFactura(fid) {
-  const p = facturacion[fid];
-  if (!p) return;
-
-  if (!s360Token) {
-    showToast("Configurá primero el token de Sistemas 360 (botón ⚙️)", "error");
-    return;
-  }
-
-  // Vehículo vinculado (por nombre)
-  const vehiculoEntry = Object.entries(vehiculos).find(([, v]) =>
-    (v.nombre || "").toLowerCase() === (p.nombre || "").toLowerCase()
-  );
-  const vid = vehiculoEntry ? vehiculoEntry[0] : null;
-  const v   = vehiculoEntry ? vehiculoEntry[1] : null;
-  if (!v) { showToast("No se encontró el vehículo vinculado", "error"); return; }
-
-  // Período actual
-  const hoy    = new Date();
-  const mesKey = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,"0")}`;
-
-  // Monto: del pago del mes o del precio base
-  const pagoMes = pagos[mesKey]?.[vid];
-  const monto   = Number(pagoMes?.monto || v.monto || 0);
-  if (!monto) { showToast("No hay monto registrado para facturar", "error"); return; }
-
-  // Anti-duplicado
-  const yaEmitida = Object.values(factEmitidas).find(f => f.fid === fid && f.periodo === mesKey);
-  if (yaEmitida) { showToast(`Ya se emitió factura para ${mesLabel(mesKey)}`, "error"); return; }
-
-  const nroCochera = String(v.cochera).padStart(2, "0");
-  const docTipo    = p.cuit ? "cuit" : "dni";
-  const docNro     = String(p.cuit || p.dni || "0").replace(/\D/g, "");
-
-  // Período facturado (mes completo)
-  const primerDia = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,"0")}-01`;
-  const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth()+1, 0);
-  const ultimoDiaTxt = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,"0")}-${String(ultimoDia.getDate()).padStart(2,"0")}`;
-
-  const body = {
-    tipo_comprobante:    "factura_c",
-    concepto:            "servicios",
-    referencia_externa:  `${fid}_${mesKey}`,
-    // Período del servicio (requerido por ARCA para concepto servicios).
-    // ⚠️ Verificar nombres exactos de estos 3 campos en la documentación del panel:
-    periodo_desde:       primerDia,
-    periodo_hasta:       ultimoDiaTxt,
-    fecha_vencimiento_pago: ultimoDiaTxt,
-    cliente: {
-      documento_tipo:    docTipo,
-      documento_numero:  docNro,
-      razon_social:      p.razon || p.nombre || "Consumidor Final",
-      condicion_iva:     S360_CONDICION[p.condicion] || "consumidor_final"
-    },
-    items: [{
-      descripcion:      `Alquiler cochera Nº ${nroCochera} — ${mesLabel(mesKey)}`,
-      cantidad:         1,
-      precio_unitario:  monto,
-      iva:              0
-    }],
-    total: monto
-  };
-
-  const btnEl = document.querySelector(`[data-emitir="${fid}"]`);
-  if (btnEl) { btnEl.disabled = true; btnEl.textContent = "Emitiendo…"; }
-
-  try {
-    const resp = await fetch(S360_URL, {
-      method:  "POST",
-      headers: {
-        "Authorization": `Bearer ${s360Token}`,
-        "Content-Type":  "application/json",
-        "Accept":        "application/json"
-      },
-      body: JSON.stringify(body)
-    });
-    const data = await resp.json();
-
-    if (resp.ok && (data.estado === "autorizado" || data.cae)) {
-      const registro = {
-        fid,
-        nombre:  p.nombre || "",
-        periodo: mesKey,
-        monto,
-        cae:     data.cae || "",
-        cae_vto: data.cae_vencimiento || data.vencimiento_cae || data.vencimiento || "",
-        nro:     data.numero || "",
-        fecha:   hoy.toLocaleDateString("es-AR"),
-        pdf:     data.pdf_a4 || data.pdf_url || (typeof data.pdf === "string" && data.pdf.startsWith("http") ? data.pdf : "") || ""
-      };
-      await push(ref(db, "factEmitidas"), registro);
-      showToast(`Factura emitida ✓ CAE: ${registro.cae}`, "success");
-    } else {
-      const errMsg = data.mensaje || data.error || data.observaciones || (data.errores ? JSON.stringify(data.errores) : `HTTP ${resp.status}`);
-      showToast(`Rechazado: ${errMsg}`, "error");
-      console.error("Sistemas 360 error:", data);
-      if (btnEl) { btnEl.disabled = false; btnEl.textContent = "Emitir factura"; }
-    }
-  } catch (e) {
-    showToast("Error de conexión con Sistemas 360", "error");
-    console.error(e);
-    if (btnEl) { btnEl.disabled = false; btnEl.textContent = "Emitir factura"; }
-  }
-}
-
 function renderFacturacion() {
   const lista = Object.entries(facturacion)
     .sort((a, b) => (a[1].nombre || "").localeCompare(b[1].nombre || ""));
@@ -2097,10 +1954,6 @@ function renderFacturacion() {
       </div>
     `;
 
-    // Factura emitida del período actual
-    const hoyKeyFact = (() => { const h = new Date(); return `${h.getFullYear()}-${String(h.getMonth()+1).padStart(2,"0")}`; })();
-    const factMesActual = Object.values(factEmitidas).find(f => f.fid === id && f.periodo === hoyKeyFact);
-
     // Panel detalle (oculto por defecto)
     const panel = document.createElement("div");
     panel.className = "fact-panel hidden";
@@ -2109,13 +1962,10 @@ function renderFacturacion() {
         <span class="fact-panel-title">${p.nombre || "—"}</span>
         <div class="fact-panel-btns">
           <button class="btn-secondary fact-edit-btn">✏️ Editar</button>
-          ${factMesActual
-            ? `<span class="fact-emitida-badge">✓ Emitida — CAE ${factMesActual.cae}</span>`
-            : `<button class="btn-emitir-fact fact-emitir-btn" data-emitir="${id}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-                Emitir factura
-              </button>`
-          }
+          <a href="https://auth.afip.gob.ar/contribuyente_/login.xhtml" target="arca_tab" class="btn-arca-fact">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Facturar en ARCA
+          </a>
           ${p.mail ? `<button class="btn-mail-fact fact-mail-btn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
             Enviar factura
@@ -2179,25 +2029,6 @@ function renderFacturacion() {
             <span class="fact-field-val">${ultimoPago.admin === "joaquin" ? "Joaquín" : "Federico"}</span>
           </div>
         </div>` : `<div class="fact-section-label" style="margin-top:12px;color:var(--text3)">Sin pagos registrados</div>`}
-        ${(() => {
-          const historial = Object.values(factEmitidas)
-            .filter(f => f.fid === id)
-            .sort((a, b) => b.periodo.localeCompare(a.periodo))
-            .slice(0, 6);
-          if (!historial.length) return "";
-          return `
-        <div class="fact-section-label" style="margin-top:12px">Facturas emitidas</div>
-        <div class="fact-historial">
-          ${historial.map(f => `
-            <div class="fact-hist-row">
-              <span class="fact-hist-periodo">${mesLabel(f.periodo)}</span>
-              <span class="fact-hist-monto">${formatMonto(f.monto)}</span>
-              <span class="fact-hist-cae">CAE ${f.cae}${f.nro ? ` · Nº ${f.nro}` : ""}</span>
-              ${f.pdf ? `<a href="${f.pdf}" target="_blank" class="fact-hist-pdf" onclick="event.stopPropagation()">PDF</a>` : ""}
-            </div>
-          `).join("")}
-        </div>`;
-        })()}
       </div>
     `;
 
@@ -2219,15 +2050,6 @@ function renderFacturacion() {
       abrirFactModal(id);
     });
 
-    // Emitir factura
-    const btnEmitir = panel.querySelector(".fact-emitir-btn");
-    if (btnEmitir) {
-      btnEmitir.addEventListener("click", (e) => {
-        e.stopPropagation();
-        emitirFactura(id);
-      });
-    }
-
 
     // Helpers comunes para los mensajes
     const primerNombre = (nombre) => {
@@ -2245,16 +2067,14 @@ function renderFacturacion() {
       btnMail.addEventListener("click", (e) => {
         e.stopPropagation();
         const cochera = v ? String(v.cochera).padStart(2,"0") : "—";
-        const periodo = factMesActual ? mesLabel(factMesActual.periodo) : (ultimoPagoMes ? mesLabel(ultimoPagoMes) : "—");
-        const monto   = factMesActual ? formatMonto(factMesActual.monto) : (ultimoPago ? formatMonto(ultimoPago.monto) : "—");
+        const periodo = ultimoPagoMes ? mesLabel(ultimoPagoMes) : "—";
+        const monto   = ultimoPago ? formatMonto(ultimoPago.monto) : "—";
         const nombre  = primerNombre(p.nombre);
-        const caeTxt  = factMesActual?.cae ? `\nCAE: ${factMesActual.cae}` : "";
-        const pdfTxt  = factMesActual?.pdf ? `\n\nDescargá tu factura aquí: ${factMesActual.pdf}` : "";
         const asunto  = encodeURIComponent(`Factura — Alquiler cochera Nº ${cochera} — ${periodo}`);
         const cuerpo  = encodeURIComponent(
           `Hola, ${nombre}!
 
-Te envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.${caeTxt}${pdfTxt}
+Te envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.
 
 Saludos!
 
@@ -2278,12 +2098,10 @@ JPSoft | Cocheras`
       btnWsp.addEventListener("click", (e) => {
         e.stopPropagation();
         const cochera = v ? String(v.cochera).padStart(2,"0") : "—";
-        const periodo = factMesActual ? mesLabel(factMesActual.periodo) : (ultimoPagoMes ? mesLabel(ultimoPagoMes) : "—");
-        const monto   = factMesActual ? formatMonto(factMesActual.monto) : (ultimoPago ? formatMonto(ultimoPago.monto) : "—");
+        const periodo = ultimoPagoMes ? mesLabel(ultimoPagoMes) : "—";
+        const monto   = ultimoPago ? formatMonto(ultimoPago.monto) : "—";
         const nombre  = primerNombre(p.nombre);
-        const caeTxt  = factMesActual?.cae ? `\nCAE: ${factMesActual.cae}` : "";
-        const pdfTxt  = factMesActual?.pdf ? `\n\nDescargá tu factura aquí: ${factMesActual.pdf}` : "";
-        const texto   = `Hola, ${nombre}!\n\nTe envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.${caeTxt}${pdfTxt}\n\nSaludos!\n\n\n${adminNombre}.\n\n\nJPSoft | Cocheras`;
+        const texto   = `Hola, ${nombre}!\n\nTe envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.\n\nSaludos!\n\n\n${adminNombre}.\n\n\nJPSoft | Cocheras`;
         const num     = wsp.replace(/\D/g, "");
         window.open(`https://wa.me/54${num}?text=${encodeURIComponent(texto)}`, "whatsapp_tab");
       });
@@ -2358,7 +2176,6 @@ async function eliminarFact() {
 }
 
 document.getElementById("btn-nuevo-fact").addEventListener("click",      () => abrirFactModal());
-document.getElementById("btn-config-s360").addEventListener("click",     () => configurarTokenS360());
 document.getElementById("fact-btn-guardar").addEventListener("click",    guardarFact);
 document.getElementById("fact-btn-eliminar").addEventListener("click",   eliminarFact);
 document.getElementById("fact-btn-cancelar").addEventListener("click",   cerrarFactModal);
