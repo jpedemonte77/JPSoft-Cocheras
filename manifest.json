@@ -1,7 +1,7 @@
 {
   "name": "JPSoft Cocheras",
   "short_name": "JPSoft Cocheras",
-  "description": "Gestor de cocheras — JPSoft",
+  "description": "Gestor de cocheras",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait-primary",
