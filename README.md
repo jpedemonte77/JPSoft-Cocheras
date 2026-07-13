@@ -1,4 +1,4 @@
-# JPSoft | Cocheras
+# JPSoft Cocheras
 
 **Sistema de gestión para cocheras y estacionamientos privados**
 
@@ -91,4 +91,4 @@ Funciona en cualquier navegador moderno. No requiere instalación.
 
 ---
 
-*JPSoft | Cocheras — Gestión simple, control total.*
+*JPSoft Cocheras — Gestión simple, control total.*
