@@ -2845,69 +2845,24 @@ select.form-input option { background: var(--bg2); }
 }
 .btn-copiar-fact:hover { background: #e4e4e6; color: var(--text); }
 
-/* Facturación — botón Emitir factura */
-.btn-emitir-fact {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px;
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: background var(--transition);
-  white-space: nowrap;
-}
-.btn-emitir-fact:hover { background: var(--accent-dark); }
-.btn-emitir-fact:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* Facturación — badge factura emitida */
-.fact-emitida-badge {
+.btn-arca-fact {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 5px 12px;
-  background: var(--libre-bg);
-  border: 1px solid var(--libre-border);
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
   border-radius: 6px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--libre);
-  font-family: 'DM Mono', monospace;
+  color: #185FA5;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: none;
+  transition: background var(--transition);
   white-space: nowrap;
 }
-
-/* Facturación — historial de facturas emitidas */
-.fact-historial {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
-}
-.fact-hist-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 10px;
-  background: var(--bg);
-  border-radius: 6px;
-  font-size: 12px;
-  flex-wrap: wrap;
-}
-.fact-hist-periodo { font-weight: 500; color: var(--text); min-width: 90px; }
-.fact-hist-monto   { font-family: 'DM Mono', monospace; color: var(--text2); }
-.fact-hist-cae     { font-family: 'DM Mono', monospace; color: var(--text3); font-size: 11px; flex: 1; }
-.fact-hist-pdf     {
-  font-size: 11px; font-weight: 600;
-  color: #185FA5; text-decoration: none;
-  padding: 2px 8px; border: 1px solid #BFDBFE;
-  border-radius: 4px; background: #EFF6FF;
-}
-.fact-hist-pdf:hover { background: #DBEAFE; }
+.btn-arca-fact:hover { background: #DBEAFE; }
 
 /* Facturación — botones Enviar factura (mail y wsp) */
 .btn-mail-fact {
