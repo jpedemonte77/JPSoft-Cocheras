@@ -1,4 +1,4 @@
-// JPSoft | Cocheras — Service Worker
+// JPSoft Cocheras — Service Worker
 const CACHE_NAME = "jpsoft-cocheras-v9";
 
 const STATIC_ASSETS = [
