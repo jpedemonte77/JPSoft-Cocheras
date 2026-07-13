@@ -1409,6 +1409,13 @@ select.form-input option { background: var(--bg2); }
   width: 100%;
 }
 
+.espera-counter {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+
 .espera-list {
   width: 100%;
 }
