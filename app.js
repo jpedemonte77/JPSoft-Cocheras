@@ -1722,7 +1722,7 @@ function abrirGastoModal(id = null) {
   document.getElementById("gastos-modal-titulo").textContent = id ? "Editar gasto" : "Agregar gasto";
   document.getElementById("gasto-detalle").value   = g.detalle   || "";
   document.getElementById("gasto-monto").value     = g.monto     || "";
-  document.getElementById("gasto-categoria").value = g.categoria || "servicio";
+  document.getElementById("gasto-categoria").value = g.categoria || "comision";
   document.getElementById("gasto-notas").value     = g.notas     || "";
 
   const btnEl = document.getElementById("gasto-btn-eliminar");
