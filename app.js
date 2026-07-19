@@ -423,6 +423,7 @@ function abrirModal(id = null, cocheraPredef = null) {
   document.getElementById("f-seguro").value    = v.seguro    || "";
   document.getElementById("f-wsp").value       = v.wsp       || "";
   document.getElementById("f-monto").value     = v.monto     || "";
+  document.getElementById("f-ingreso").value   = v.ingreso   || "";
   document.getElementById("f-notas").value     = v.notas     || "";
 
   resetFotos(v);
@@ -466,6 +467,7 @@ async function guardar() {
     seguro:       document.getElementById("f-seguro").value.trim(),
     wsp:          document.getElementById("f-wsp").value.trim(),
     monto:        Number(document.getElementById("f-monto").value) || 0,
+    ingreso:      document.getElementById("f-ingreso").value || "",
     notas:        document.getElementById("f-notas").value.trim(),
     cedulaFrente: vActual.cedulaFrente || "",
     cedulaDorso:  vActual.cedulaDorso  || ""
@@ -619,13 +621,14 @@ function renderPagos() {
   let jqEf = 0, jqTr = 0, fdEf = 0, fdTr = 0;
 
   lista.forEach(([vid, v]) => {
+    const fueraDePeriodo = v.ingreso && mesActivo < v.ingreso;
     const p = pagosMes[vid];
     if (p && p.pagado) {
       pagados++;
       const m = Number(p.monto) || 0;
       if (p.admin === "joaquin") { p.metodo === "transferencia" ? jqTr += m : jqEf += m; }
       else                       { p.metodo === "transferencia" ? fdTr += m : fdEf += m; }
-    } else {
+    } else if (!fueraDePeriodo) {
       pendientes++;
     }
   });
@@ -649,6 +652,9 @@ function renderPagos() {
   }
 
   lista.forEach(([vid, v]) => {
+    // El inquilino actual no estaba en meses previos a su ingreso
+    if (v.ingreso && mesActivo < v.ingreso) return;
+
     const p       = pagosMes[vid] || {};
     const esPagado = !!p.pagado;
     const monto   = Number(v.monto) || 0;
@@ -755,8 +761,11 @@ function abrirHistorial(vid, nombre) {
   const body = document.getElementById("detalle-body");
 
   // Recopilar todos los meses con pago para este inquilino
+  // (solo desde su mes de ingreso — pagos previos son del inquilino anterior)
+  const vIngreso = (vehiculos[vid] || {}).ingreso || "";
   const historial = [];
   Object.entries(pagos).forEach(([mes, mesDatos]) => {
+    if (vIngreso && mes < vIngreso) return;
     const p = mesDatos[vid];
     if (p && p.pagado) historial.push({ mes, ...p });
   });
@@ -1346,6 +1355,7 @@ async function exportarExcel() {
     "Seguro":        v.seguro || "",
     "WhatsApp":      v.wsp ? "+54 " + v.wsp : "",
     "Alquiler ($)":  v.monto || 0,
+    "Ingresó (mes)": v.ingreso || "",
     "Notas":         v.notas || ""
   }));
   const wsV = XLSX.utils.json_to_sheet(vRows);
@@ -1536,6 +1546,7 @@ async function importarExcel(file) {
           seguro:    row["Seguro"] || "",
           wsp:       (row["WhatsApp"] || "").replace("+54 ", "").trim(),
           monto:     Number(row["Alquiler ($)"]) || 0,
+          ingreso:   row["Ingresó (mes)"] || "",
           notas:     row["Notas"] || "",
           cedulaFrente: "",
           cedulaDorso:  ""
