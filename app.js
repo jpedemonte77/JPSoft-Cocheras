@@ -2089,7 +2089,7 @@ Saludos!
 ${adminNombre}.
 
 
-JPSoft | Cocheras`
+JPSoft Cocheras`
         );
         const a = document.createElement("a");
         a.href = `mailto:${p.mail}?subject=${asunto}&body=${cuerpo}`;
@@ -2108,7 +2108,7 @@ JPSoft | Cocheras`
         const periodo = ultimoPagoMes ? mesLabel(ultimoPagoMes) : "—";
         const monto   = ultimoPago ? formatMonto(ultimoPago.monto) : "—";
         const nombre  = primerNombre(p.nombre);
-        const texto   = `Hola, ${nombre}!\n\nTe envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.\n\nSaludos!\n\n\n${adminNombre}.\n\n\nJPSoft | Cocheras`;
+        const texto   = `Hola, ${nombre}!\n\nTe envío la factura correspondiente al alquiler de la cochera Nº ${cochera} del período ${periodo} por un monto de ${monto}.\n\nSaludos!\n\n\n${adminNombre}.\n\n\nJPSoft Cocheras`;
         const num     = wsp.replace(/\D/g, "");
         window.open(`https://wa.me/54${num}?text=${encodeURIComponent(texto)}`, "whatsapp_tab");
       });
@@ -2214,7 +2214,7 @@ async function generarReciboPDF(vid, v, p, mes) {
 
   wrap.innerHTML = `
     <div style="background:#111;padding:72px 80px 56px;text-align:center">
-      <div style="font-size:28px;font-weight:500;color:rgba(255,255,255,.6);letter-spacing:.06em;margin-bottom:10px">JPSoft | Cocheras</div>
+      <div style="font-size:28px;font-weight:500;color:rgba(255,255,255,.6);letter-spacing:.06em;margin-bottom:10px">JPSoft Cocheras</div>
       <div style="font-size:52px;font-weight:500;color:#fff">Recibo de pago</div>
     </div>
 
@@ -2873,11 +2873,11 @@ document.getElementById("btn-imprimir-cocheras")?.addEventListener("click", asyn
   wrap.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;
       border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:16px">
-      <div style="font-size:16px;font-weight:700;color:#111">JPSoft | Cocheras — Cocheras</div>
+      <div style="font-size:16px;font-weight:700;color:#111">JPSoft Cocheras — Cocheras</div>
       <div style="font-size:11px;color:#888">${hoy} · ${ocupadosCount} ocup. · ${libresCount} libre${libresCount !== 1 ? "s" : ""}</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(${cols},${cW}px);gap:${gap}px">${celdas}</div>
-    <div style="margin-top:16px;font-size:10px;color:#ccc;text-align:right">JPSoft | Cocheras</div>`;
+    <div style="margin-top:16px;font-size:10px;color:#ccc;text-align:right">JPSoft Cocheras</div>`;
 
   document.body.appendChild(wrap);
 
