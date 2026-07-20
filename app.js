@@ -2066,7 +2066,7 @@ function renderFacturacion() {
       if (nombre.includes(",")) return partes[partes.length - 1];
       return partes[0];
     };
-    const adminNombre = document.getElementById("user-nombre")?.textContent || "JPSoft | Cocheras";
+    const adminNombre = document.getElementById("user-nombre")?.textContent || "JPSoft Cocheras";
 
     // Mail — Enviar factura
     const btnMail = panel.querySelector(".fact-mail-btn");
